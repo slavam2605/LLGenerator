@@ -1,0 +1,46 @@
+lexer Lab3Lexer;
+
+header {
+package tex;
+
+import static tex.TexPostprocessor.*;
+};
+
+start mathTextStart;
+
+mathTextStart returns [String s]
+    ->  mathText[new StringBuilder()] {$s = $mathText.sb.toString();}
+    ;
+
+mathText [StringBuilder isb] returns [StringBuilder sb]
+    ->  mathTextElem[$isb] mathText[$mathTextElem.sb] {$sb = $isb;}
+    |   {$sb = $isb;}
+    ;
+
+mathTextElem [StringBuilder isb] returns [StringBuilder sb]
+    ->  UNDERSCORE param {$sb = $isb; $sb.append("<sub>" + $param.s + "</sub>");}
+    |   CIRCUMFLEX param {$sb = $isb; $sb.append("<sup>" + $param.s + "</sup>");}
+    |   ESC_STRING {
+            $sb = $isb;
+            String key = $ESC_STRING.substring(1);
+            if (TEXConstants.constant.containsKey(key)) {
+                $sb.append(transform(TEXConstants.constant.get(key)));
+            } else {
+                $sb.append("???");
+            }
+        }
+    |   LR_KEY param {$sb = $isb; $sb.append($param.s.trim());}
+    |   NOT_KEY param {$sb = $isb; $sb.append(enspan($param.s));}
+    |   OVERLINE_KEY param {$sb = $isb; $sb.append("<overline>" + $param.s + "</overline>");}
+    |   SQRT_KEY param {$sb = $isb; $sb.append("√<overline>" + $param.s + "</overline>");}
+    |   ESC_CHAR {$sb = $isb; $sb.append(transform(unescape($ESC_CHAR)));}
+    |   MATH_CHAR {$sb = $isb; $sb.append(transform($MATH_CHAR));}
+    ;
+
+param returns [String s]
+    ->  ESC_STRING {$s = getEscapedString($ESC_STRING);}
+    |   ESC_CHAR {$s = getEscapedChar($ESC_CHAR);}
+    |   MATH_CHAR {$s = transform($MATH_CHAR);}
+    |   LCBRACE mathTextStart RCBRACE {$s = $mathTextStart.s;}
+    ;
+

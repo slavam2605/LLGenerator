@@ -1,0 +1,14 @@
+package tex;
+
+UNDERSCORE ->     '_';
+CIRCUMFLEX ->     '\^';
+LCBRACE ->        '\{';
+RCBRACE ->        '\}';
+LR_KEY ->         '\\left|\\right';
+NOT_KEY ->        '\\not';
+OVERLINE_KEY ->   '\\overline';
+SQRT_KEY ->       '\\sqrt';
+ESC_STRING ->     '\\[a-zA-Z0-9_]+';     // указан последним, если не подошёл никакой *_KEY
+ESC_CHAR ->       '\\.';                 // ага, тут есть комментарии
+MATH_CHAR ->      '[^ \t\n\r{}_\^\\]';   /* даже такие */
+WS ->             '[ \t\n\r]+' :: skip;

@@ -1,0 +1,8 @@
+lexer TestLexer;
+start a;
+
+a -> b[1];
+b [int x] -> c["$$$, [" + $x + ',' + ' ' + '$' + '$' + '$'];
+c [String s] -> d e[$d.r, $s];
+d returns [int r] -> NUMBER NUMBER {$r = Integer.valueOf($NUMBER) * Integer.valueOf($NUMBER1);};
+e [int x, String s] -> {System.out.println($x + " :: " + $s);};

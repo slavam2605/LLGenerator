@@ -1,0 +1,6 @@
+PLUS ->     '\+';
+TIMES ->    '\*';
+NUMBER ->   '[0-9]+';
+LBRACKET -> '\(';
+RBRACKET -> '\)';
+WS ->       '[ \r\t\n]+' :: skip;

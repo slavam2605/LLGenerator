@@ -1,0 +1,21 @@
+lexer DummyLexer;
+start expr;
+
+expr returns [int a]
+    ->  term exprList {$a = $term.a + $exprList.a;}
+    ;
+exprList returns [int a]
+    ->  PLUS term exprList {$a = $term.a + $exprList.a;}
+    |   {$a = 0; System.out.println(s);}
+    ;
+term returns [int a]
+    ->  factor termList {$a = $factor.a * $termList.a;}
+    ;
+termList returns [int a]
+    ->  TIMES factor termList {$a = $factor.a * $termList.a;}
+    |   {$a = 1;}
+    ;
+factor returns [int a]
+    ->  NUMBER {$a = Integer.valueOf($NUMBER);}
+    |   LBRACKET expr RBRACKET {$a = $expr.a;}
+    ;
